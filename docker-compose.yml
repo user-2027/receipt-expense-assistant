@@ -1,0 +1,43 @@
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: receipt_postgres
+
+    environment:
+      POSTGRES_USER: receipt
+      POSTGRES_PASSWORD: receipt123
+      POSTGRES_DB: expenses
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  n8n:
+    image: n8nio/n8n
+    container_name: receipt_n8n
+
+    ports:
+      - "5678:5678"
+
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_DATABASE: expenses
+      DB_POSTGRESDB_USER: receipt
+      DB_POSTGRESDB_PASSWORD: receipt123
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+
+    depends_on:
+      - postgres
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  postgres_data:
+  n8n_data:
