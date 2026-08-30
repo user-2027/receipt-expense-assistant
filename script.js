@@ -16,16 +16,19 @@ async function upload() {
 
   try {
     const res = await fetch(WEBHOOK_URL, {
-      method: "POST",
-      body: form
-    });
+  method: "POST",
+  body: form
+});
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+const text = await res.text();
 
-    const json = await res.json();
-    output.textContent = JSON.stringify(json, null, 2);
+if (!text) {
+  throw new Error("Empty response from server");
+}
+
+const json = JSON.parse(text);
+
+output.textContent = JSON.stringify(json, null, 2);
 
   } catch (err) {
     console.error(err);
