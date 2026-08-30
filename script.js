@@ -1,6 +1,5 @@
 
-const WEBHOOK="https://agentspheonix.app.n8n.cloud/webhook/upload-receipt";
-
+const WEBHOOK_URL = "https://agentspheonix.app.n8n.cloud/webhook/upload-receipt";
 async function upload(){
 
   const file=document.getElementById("file").files[0];
