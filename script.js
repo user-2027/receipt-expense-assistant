@@ -1,23 +1,34 @@
-
 const WEBHOOK_URL = "https://agentspheonix.app.n8n.cloud/webhook/upload-receipt";
-async function upload(){
 
-  const file=document.getElementById("file").files[0];
+async function upload() {
+  const fileInput = document.getElementById("file");
+  const output = document.getElementById("output");
 
-  if(!file) return alert("Choose a receipt.");
+  if (!fileInput.files.length) {
+    alert("Choose a receipt.");
+    return;
+  }
 
-  const form=new FormData();
-  form.append("file",file);
+  const form = new FormData();
+  form.append("file", fileInput.files[0]);
 
-  document.getElementById("output").textContent="Processing...";
+  output.textContent = "Processing...";
 
-  const res=await fetch(WEBHOOK,{
-    method:"POST",
-    body:form
-  });
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      body: form
+    });
 
-  const json=await res.json();
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
 
-  document.getElementById("output").textContent=
-      JSON.stringify(json,null,2);
+    const json = await res.json();
+    output.textContent = JSON.stringify(json, null, 2);
+
+  } catch (err) {
+    console.error(err);
+    output.textContent = `Error: ${err.message}`;
+  }
 }
